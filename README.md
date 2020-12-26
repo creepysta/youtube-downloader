@@ -8,6 +8,6 @@
 * run the file `run.bat` for _WINDOWS_ users
 * run the file `run.sh` for _UNIX_ users
 
-> (PLS) **Download ffmpeg and add the path to the system path** (_both unix and windows users_)
+> (PLS) **Download [ffmpeg](https://ffmpeg.org/download.html) and add the path to the system path** (_both unix and windows users_)
 
 The videos and audios are stored separately
