@@ -1,0 +1,11 @@
+songs/
+videos/
+audios/
+tube_dl/
+*env*/
+*.html
+*index*/
+*.txt
+*.vim
+*.swp
+*test
