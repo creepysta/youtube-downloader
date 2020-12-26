@@ -76,7 +76,7 @@ def download(index, url, dst):
             #continue
             print(e)
             log = open('log.txt', 'a+')
-            log.write(f'{index} : FAILED\ne\n\n')
+            log.write(f'{index} : FAILED\n{e}\n\n')
             ok = False
             log.close()
         break
