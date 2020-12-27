@@ -14,8 +14,6 @@ def ytplaylist(playlist = None):
             need = bs.findAll('a', {'class': item}, href=True)
             print(f'{len(need)} songs found.')
             for index, a in enumerate(need):
-                if index > 10:
-                    break
                 href = a['href']
                 print(f'{index+1}.', end = ' ') 
                 suff = href.split('v=')[1]
@@ -82,7 +80,7 @@ def convert():
         dst_path = os.path.join(dst, aud_name)
         print(f'{index+1}. {aud_name}:', end = '\n')
         os.system(f'ffmpeg -v quiet -stats -i "{src_path}" "{dst_path}"')
-        index += 1
+
 
 def init():
     vid_path = 'videos'
@@ -98,7 +96,9 @@ def init():
     os.mkdir(aud_path)
 
 
-def download_test():
+def retry():
+    if not os.path.exists('log.txt'):
+        return
     test_path = 'test'
     if os.path.exists(test_path):
         os.system(f'rmdir {test_path} /s /q')
@@ -108,6 +108,8 @@ def download_test():
     for index, line in enumerate(log):
         line = line.split(':')
         if len(line) == 2:
+            if 'title' in log[index+1]:
+                continue
             url = line[1]
             yt = Youtube(f'https://youtube.com/watch?v={url}')
             print(f'{yt.title}:')
@@ -115,6 +117,7 @@ def download_test():
 
 
 def main():
+    os.chdir(os.getcwd())
     init()
     print('1. Youtube Playlist')
     print('2. Youtube Music Playlist')
@@ -132,7 +135,6 @@ def main():
 
 
 if __name__ == "__main__":
-    os.chdir(os.getcwd())
-    #main()
-    download_test()
+    main()
+    retry()
 
