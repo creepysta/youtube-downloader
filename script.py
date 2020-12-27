@@ -1,37 +1,23 @@
 import os
 import sys
 from bs4 import BeautifulSoup
-#import requests
-#from urllib.request import urlopen
-#from urllib import parse
 from pathlib import Path
 from tube_dl import Playlist, Youtube
-#from moviepy.editor import * # stupid fucking shit
 
 def ytplaylist(playlist='https://www.youtube.com/watch?v=SlPhMPnQ58k&list=PL4o29bINVT4EG_y-k5jGoOu3-Am8Nvi10'):
     print('Downloading...')
-    #playlist += '&index=1'
-    #html = requests.get(playlist, allow_redirects=True).content.decode()
-    #html = urlopen(playlist).read()
     for f in os.listdir():
         if '.html' in f:
             html = open(f, 'rb').read().decode()
-            search = 'Dua Lipa'
-            search = 'ytd-playlist-panel-video-renderer'
             bs = BeautifulSoup(html)
             item = "yt-simple-endpoint style-scope ytd-playlist-panel-video-renderer"
             need = bs.findAll('a', {'class': item}, href=True)
             print(f'{len(need)} songs found.')
-            dst = 'videos'
-            index = 1
-            for a in need:
-                if index > 10:
-                    pass#break
+            for index, a in enumerate(need):
                 href = a['href']
-                print(f'{index}. {href}') 
-                suff = href.split('=')[1]
-                download(index, suff, dst)
-                index += 1
+                print(f'{index+1}.', end = ' ') 
+                suff = href.split('v=')[1]
+                download(index+1, suff)
             os.remove(f)
 
 
@@ -53,30 +39,21 @@ def show_progress(progress):
     sys.stdout.flush() 
 
 
-def download(index, url, dst):
-    '''
-    yt = Youtube(f'https://youtube.com/watch?v={url}')
-    if 'title' not in dir(yt):
-        return
-    print(f'{yt.title}:', end = '\n')
-    yt.formats.first().download('mp3', progress, dst, None) 
-    '''
+def download(index, url, dst = 'videos'):
     while True:
         try:
             if 'youtube' in url:
                 _, url = url.split('v=')
             elif 'youtu.be' in url:
                 url = url.split('/')[-1]
-            print(url)
+            #print(url)
             yt = Youtube(f'https://youtube.com/watch?v={url}')
-            print(f'{index}. {yt.title}:')
+            print(f'{yt.title}:')
             yt.formats.first().download('mp3', progress, dst, None) 
         except Exception as e:
-            ##for retrying url
-            #continue
             print(e)
             log = open('log.txt', 'a+')
-            log.write(f'{index} : FAILED\n{e}\n\n')
+            log.write(f'{index}:{url}\n{e}\n')
             ok = False
             log.close()
         break
@@ -84,44 +61,25 @@ def download(index, url, dst):
 
 def musicyt(playlist = 'https://music.youtube.com/playlist?list=PLTy__vzNAW6C6sqmp6ddhsuaLsodKDEt_'):
     print('Downloading...')
-    #playlist = 'https://music.youtube.com/playlist?list=PLhJok_NiXcsi_t9R1E8Fw5TvPdmIFf1yz' # Sam Beam
-    #playlist = 'https://music.youtube.com/playlist?list=PL640399F2F8BF381C' # SAM BEAM
-    playlist = 'https://music.youtube.com/playlist?list=RDCLAK5uy_nbTnrBv4CxZys35IAzhO0-fFCiKD58qzo' # Bollywood Fire
     pl = Playlist(playlist).videos
-    dst = 'videos'
-    #download('GifLPveCWx8', dst)
-    #return
-    index = 0
-    for suff in pl:
-        index += 1
+    for index, suff in enumerate(pl):
         ok = True
-        if index > 10:
-            pass#break
-        print(f'{index}.', end=' ')
-        print(suff)
-        download(index, suff, dst)
+        print(f'{index+1}.', end=' ')
+        #print(suff)
+        download(index+1, suff)
 
 
 def convert():
     print('\n\nConverting...')
     src = 'videos'
     dst = 'audios'
-    index = 1
-    for f in os.listdir(src):
+    print(f'{src} -> {dst}')
+    for index, f in enumerate(os.listdir(src)):
         src_path = os.path.join(src, f);
         aud_name = Path(src_path).name.split('.')[0] + '.mp3'
         dst_path = os.path.join(dst, aud_name)
-        print(f'{index}. {src_path} -> {dst_path}:', end = '\n')
+        print(f'{index+1}. {aud_name}:', end = '\n')
         os.system(f'ffmpeg -v quiet -stats -i "{src_path}" "{dst_path}"')
-        '''
-        if '.mp4' in f:
-            # stupid shit
-            vid = VideoFileClip(file_path)
-            aud = videoClip.audio
-            aud.write_audiofile(aud_name)
-            vid.close()
-            aud.close()
-        '''
         index += 1
 
 def init():
@@ -129,17 +87,31 @@ def init():
     aud_path = 'audios'
     songs_path = 'songs'
     log_file = 'log.txt'
-    if os.path.exists(log_file):
-        os.remove(log_file)
+    #if os.path.exists(log_file):
+    #    os.remove(log_file)
     if os.path.exists(songs_path):
         os.system(f'rmdir {songs_path} /s /q')
-    if os.path.exists(vid_path):
-        os.system(f'rmdir {vid_path} /s /q')
+    #if os.path.exists(vid_path):
+    #    os.system(f'rmdir {vid_path} /s /q')
     if os.path.exists(aud_path):
         os.system(f'rmdir {aud_path} /s /q')
-    #os.mkdir(songs_path)
-    os.mkdir(vid_path)
+    os.mkdir(songs_path)
+    #os.mkdir(vid_path)
     os.mkdir(aud_path)
+
+
+def download_test():
+    log = open('log.txt', 'r').read().split('\n')
+    print(log)
+    for index, line in enumerate(log):
+        line = line.split(':')
+        if len(line) == 2:
+            if eval(line[0]) < 96:
+                continue
+            url = line[1]
+            yt = Youtube(f'https://youtube.com/watch?v={url}')
+            print(f'{yt.title}:')
+            yt.formats.first().download('mp3', progress, 'songs', None) 
 
 
 if __name__ == "__main__":
@@ -158,4 +130,5 @@ if __name__ == "__main__":
         url = input("Enter the url: ")
         download(1, url, 'videos')
     convert()
+    #download_test()
 
