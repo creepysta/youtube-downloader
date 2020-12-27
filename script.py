@@ -19,6 +19,7 @@ def ytplaylist(playlist='https://www.youtube.com/watch?v=SlPhMPnQ58k&list=PL4o29
                 suff = href.split('v=')[1]
                 download(index+1, suff)
             os.remove(f)
+            os.system(f'rmdir {f.split('.')[0]} /s /q')
 
 
 def progress(Chunk=None, bytes_done=None, total_bytes=None):
