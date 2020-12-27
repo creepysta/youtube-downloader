@@ -14,12 +14,14 @@ def ytplaylist(playlist='https://www.youtube.com/watch?v=SlPhMPnQ58k&list=PL4o29
             need = bs.findAll('a', {'class': item}, href=True)
             print(f'{len(need)} songs found.')
             for index, a in enumerate(need):
+                if index > 10:
+                    break
                 href = a['href']
                 print(f'{index+1}.', end = ' ') 
                 suff = href.split('v=')[1]
                 download(index+1, suff)
-            os.remove(f)
-            os.system(f'rmdir {f.split('.')[0]} /s /q')
+            #os.remove(f)
+            print(f'rmdir {f.split(".")[0]} /s /q')
 
 
 def progress(Chunk=None, bytes_done=None, total_bytes=None):
@@ -88,16 +90,16 @@ def init():
     aud_path = 'audios'
     songs_path = 'songs'
     log_file = 'log.txt'
-    #if os.path.exists(log_file):
-    #    os.remove(log_file)
+    if os.path.exists(log_file):
+        os.remove(log_file)
     if os.path.exists(songs_path):
         os.system(f'rmdir {songs_path} /s /q')
-    #if os.path.exists(vid_path):
-    #    os.system(f'rmdir {vid_path} /s /q')
+    if os.path.exists(vid_path):
+        os.system(f'rmdir {vid_path} /s /q')
     if os.path.exists(aud_path):
         os.system(f'rmdir {aud_path} /s /q')
-    os.mkdir(songs_path)
-    #os.mkdir(vid_path)
+    #os.mkdir(songs_path)
+    os.mkdir(vid_path)
     os.mkdir(aud_path)
 
 

@@ -1,7 +1,7 @@
 pip install virtualenv
 virtualenv env
 cd env/Scripts
-activate
+call activate
 cd ../..
 pip install -r requirements
 pip install numpy==1.19.0
