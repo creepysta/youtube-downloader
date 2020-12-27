@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from tube_dl import Playlist, Youtube
 
-def ytplaylist(playlist='https://www.youtube.com/watch?v=SlPhMPnQ58k&list=PL4o29bINVT4EG_y-k5jGoOu3-Am8Nvi10'):
+def ytplaylist(playlist = None):
     print('Downloading...')
     for f in os.listdir():
         if '.html' in f:
@@ -20,8 +20,9 @@ def ytplaylist(playlist='https://www.youtube.com/watch?v=SlPhMPnQ58k&list=PL4o29
                 print(f'{index+1}.', end = ' ') 
                 suff = href.split('v=')[1]
                 download(index+1, suff)
-            #os.remove(f)
-            print(f'rmdir {f.split(".")[0]} /s /q')
+            os.remove(f)
+            folder = f.split(".")[0] + "_files"
+            os.system(f'rmdir "{folder}" /s /q')
 
 
 def progress(Chunk=None, bytes_done=None, total_bytes=None):
@@ -49,7 +50,6 @@ def download(index, url, dst = 'videos'):
                 _, url = url.split('v=')
             elif 'youtu.be' in url:
                 url = url.split('/')[-1]
-            #print(url)
             yt = Youtube(f'https://youtube.com/watch?v={url}')
             print(f'{yt.title}:')
             yt.formats.first().download('mp3', progress, dst, None) 
@@ -62,13 +62,12 @@ def download(index, url, dst = 'videos'):
         break
 
 
-def musicyt(playlist = 'https://music.youtube.com/playlist?list=PLTy__vzNAW6C6sqmp6ddhsuaLsodKDEt_'):
+def musicyt(playlist):
     print('Downloading...')
     pl = Playlist(playlist).videos
     for index, suff in enumerate(pl):
         ok = True
         print(f'{index+1}.', end=' ')
-        #print(suff)
         download(index+1, suff)
 
 
@@ -88,37 +87,34 @@ def convert():
 def init():
     vid_path = 'videos'
     aud_path = 'audios'
-    songs_path = 'songs'
     log_file = 'log.txt'
     if os.path.exists(log_file):
         os.remove(log_file)
-    if os.path.exists(songs_path):
-        os.system(f'rmdir {songs_path} /s /q')
     if os.path.exists(vid_path):
         os.system(f'rmdir {vid_path} /s /q')
     if os.path.exists(aud_path):
         os.system(f'rmdir {aud_path} /s /q')
-    #os.mkdir(songs_path)
     os.mkdir(vid_path)
     os.mkdir(aud_path)
 
 
 def download_test():
+    test_path = 'test'
+    if os.path.exists(test_path):
+        os.system(f'rmdir {test_path} /s /q')
+    os.mkdir(test_path)
     log = open('log.txt', 'r').read().split('\n')
     print(log)
     for index, line in enumerate(log):
         line = line.split(':')
         if len(line) == 2:
-            if eval(line[0]) < 96:
-                continue
             url = line[1]
             yt = Youtube(f'https://youtube.com/watch?v={url}')
             print(f'{yt.title}:')
-            yt.formats.first().download('mp3', progress, 'songs', None) 
+            yt.formats.first().download('mp3', progress, test_path, None) 
 
 
-if __name__ == "__main__":
-    os.chdir(os.getcwd())
+def main():
     init()
     print('1. Youtube Playlist')
     print('2. Youtube Music Playlist')
@@ -133,5 +129,10 @@ if __name__ == "__main__":
         url = input("Enter the url: ")
         download(1, url, 'videos')
     convert()
-    #download_test()
+
+
+if __name__ == "__main__":
+    os.chdir(os.getcwd())
+    #main()
+    download_test()
 

@@ -9,3 +9,4 @@ tube_dl/
 *.vim
 *.swp
 *test
+*test*/

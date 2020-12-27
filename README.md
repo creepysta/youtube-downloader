@@ -5,9 +5,9 @@
 >> save as many pages you like. no problemooo
 
 ### How to use
-* run the file `run.bat` for _WINDOWS_ users
-* run the file `run.sh` for _UNIX_ users
+> * Download [ffmpeg](https://ffmpeg.org/download.html)
+> * set the path to \<download-path\>/ffmpeg/bin to the system path (_both unix and windows users_)
+> * run the file `run.bat` for _WINDOWS_ users
+> * run the file `run.sh` for _UNIX_ users
 
-> (PLS) **Download [ffmpeg](https://ffmpeg.org/download.html) and add the path to the system path** (_both unix and windows users_)
-
-The videos and audios are stored separately
+_The videos and audios are stored separately_
