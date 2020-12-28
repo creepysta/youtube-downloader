@@ -15,8 +15,6 @@ def ytplaylist(playlist = None):
             need = bs.findAll('a', {'class': item}, href=True)
             print(f'{len(need)} songs found.')
             for index, a in enumerate(need):
-                if index > 2:
-                    break
                 href = a['href']
                 print(f'{index+1}.', end = ' ') 
                 suff = href.split('v=')[1]
@@ -95,7 +93,7 @@ def init():
     if os.path.exists(aud_path):
         os.system(f'rmdir "{aud_path}" /s /q')
     if os.path.exists(retry_path):
-        os.system(f'rmdir "{aud_path}" /s /q')
+        os.system(f'rmdir "{retry_path}" /s /q')
     os.mkdir(vid_path)
     os.mkdir(aud_path)
 
