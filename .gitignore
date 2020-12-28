@@ -11,3 +11,5 @@ tube_dl/
 *.swo
 *test
 *test*/
+retry/
+*_files/

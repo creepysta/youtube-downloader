@@ -8,6 +8,7 @@ def ytplaylist(playlist = None):
     print('Downloading...')
     for f in os.listdir():
         if '.html' in f:
+            print(f'File: {f}')
             html = open(f, 'rb').read().decode()
             bs = BeautifulSoup(html)
             item = "yt-simple-endpoint style-scope ytd-playlist-panel-video-renderer"
@@ -97,6 +98,7 @@ def init():
 def retry():
     if not os.path.exists('log.txt'):
         return
+    print('Retrying...')
     test_path = 'retry'
     if os.path.exists(test_path):
         os.system(f'rmdir "{test_path}" /s /q')
@@ -113,10 +115,9 @@ def retry():
             print(f'{yt.title}:')
             yt.formats.first().download('mp3', progress, test_path, None) 
     convert(src=test_path, dst='audios')
-    os.remove('log.txt')
+
 
 def main():
-    os.chdir(os.getcwd())
     init()
     print('1. Youtube Playlist')
     print('2. Youtube Music Playlist')
@@ -131,9 +132,10 @@ def main():
         url = input("Enter the url: ")
         download(1, url, 'videos')
     convert()
+    retry()
 
 
 if __name__ == "__main__":
+    os.chdir(os.getcwd())
     main()
-    retry()
 
