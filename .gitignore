@@ -8,5 +8,6 @@ tube_dl/
 *.txt
 *.vim
 *.swp
+*.swo
 *test
 *test*/

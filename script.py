@@ -69,10 +69,8 @@ def musicyt(playlist):
         download(index+1, suff)
 
 
-def convert():
+def convert(src='videos', dst='audios'):
     print('\n\nConverting...')
-    src = 'videos'
-    dst = 'audios'
     print(f'{src} -> {dst}')
     for index, f in enumerate(os.listdir(src)):
         src_path = os.path.join(src, f);
@@ -89,9 +87,9 @@ def init():
     if os.path.exists(log_file):
         os.remove(log_file)
     if os.path.exists(vid_path):
-        os.system(f'rmdir {vid_path} /s /q')
+        os.system(f'rmdir "{vid_path}" /s /q')
     if os.path.exists(aud_path):
-        os.system(f'rmdir {aud_path} /s /q')
+        os.system(f'rmdir "{aud_path}" /s /q')
     os.mkdir(vid_path)
     os.mkdir(aud_path)
 
@@ -99,9 +97,9 @@ def init():
 def retry():
     if not os.path.exists('log.txt'):
         return
-    test_path = 'test'
+    test_path = 'retry'
     if os.path.exists(test_path):
-        os.system(f'rmdir {test_path} /s /q')
+        os.system(f'rmdir "{test_path}" /s /q')
     os.mkdir(test_path)
     log = open('log.txt', 'r').read().split('\n')
     print(log)
@@ -114,7 +112,8 @@ def retry():
             yt = Youtube(f'https://youtube.com/watch?v={url}')
             print(f'{yt.title}:')
             yt.formats.first().download('mp3', progress, test_path, None) 
-
+    convert(src=test_path, dst='audios')
+    os.remove('log.txt')
 
 def main():
     os.chdir(os.getcwd())
