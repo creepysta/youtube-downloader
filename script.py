@@ -25,11 +25,7 @@ def ytplaylist(playlist = None):
 
 
 def progress(Chunk=None, bytes_done=None, total_bytes=None):
-    till_now = bytes_done / total_bytes
-    show_progress(till_now)
-
-
-def show_progress(progress):
+    progress = bytes_done / total_bytes
     length = 25
     block = int(round(length*progress))
     perc = round(progress*100, 2)
