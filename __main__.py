@@ -98,7 +98,7 @@ class Youtube:
                 #print(i["owner"]["videoOwnerRenderer"]["subscriberCountText"]["runs"])
                 self.subscribers= 0
                 check = i["owner"]["videoOwnerRenderer"]
-                if 'subscriberCountText' in check.keys():
+                if 'subscriberCountText' in check.keys() and 'runs' in check['subscriberCountText'].keys():
                     self.subscribers = check["subscriberCountText"]["runs"][0]["text"].split(' ')[0]
                 self.description="".join([j["text"] for j in i["description"]["runs"]])
                 self.meta = dict()
