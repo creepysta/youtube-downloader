@@ -74,7 +74,7 @@ def convert(src='videos', dst='audios'):
         aud_name = Path(src_path).name.split('.')[0] + '.mp3'
         dst_path = os.path.join(dst, aud_name)
         print(f'{index+1}. {aud_name}:', end = '\n')
-        os.system(f'ffmpeg -v quiet -stats -i "{src_path}" "{dst_path}"')
+        os.system(f'ffmpeg -n -v quiet -stats -i "{src_path}" "{dst_path}"')
 
 
 def init():
@@ -118,20 +118,34 @@ def retry():
 
 def main():
     init()
-    print('1. Youtube Playlist')
-    print('2. Youtube Music Playlist')
-    print('3. Youtube Video url')
-    choice = eval(input("Enter choice: "))
-    if choice == 1:
-        ytplaylist()
-    elif choice == 2:
-        url = input("Enter the url: ")
-        musicyt(url)
-    elif choice == 3:
-        url = input("Enter the url: ")
-        download(1, url, 'videos')
-    convert()
-    retry()
+    while True:
+        while True:
+            try:
+                print('1: Youtube Playlist')
+                print('2: Youtube Music Playlist')
+                print('3: Youtube Video url')
+                choice = eval(input("Enter choice: "))
+                break
+            except:
+                print('Choose a number.')
+        if choice == 1:
+            ytplaylist()
+        elif choice == 2:
+            url = input("Enter the url: ")
+            musicyt(url)
+        elif choice == 3:
+            url = input("Enter the url: ")
+            download(1, url, 'videos')
+        convert()
+        retry()
+        while True:
+            more = input('Continue downloading? [y/n]: ')
+            if more.lower() == 'n':
+                sys.exit(0)
+            elif more.lower() == 'y':
+                break
+            else:
+                print('Choose "y" to continue, "n" to stop.')
 
 
 if __name__ == "__main__":

@@ -9,6 +9,8 @@ tube_dl/
 *.vim
 *.swp
 *.swo
+*.mp3
+*.mp4
 *test
 *test*/
 retry/
