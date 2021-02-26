@@ -6,7 +6,7 @@
 
 ### How to use
 * Download and install [python](https://www.python.org/downloads/release/python-374/)
-* Download [ffmpeg](https://ffmpeg.org/download.html)
+* Download [ffmpeg](https://ffmpeg.org/download.html) and extract it.
 * set the path to \<ffmpeg-download-path\>/ffmpeg/bin to the system path (_both unix and windows users_)
 * run the file `run.bat` if you are a _WINDOWS_ user
 * run the file `run.sh` if you are a _UNIX_ user
