@@ -1,8 +1,6 @@
 pip install virtualenv
 virtualenv env
-cd env/Scripts
-call activate
-cd ../..
+call env\Scripts\activate
 pip install -r requirements
 pip install numpy==1.19.0
 copy formats.py "env/Lib/site-packages/tube_dl/formats.py" /y
