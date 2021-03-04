@@ -62,7 +62,7 @@ class Youtube:
         title = title.split('|')
         if len(title):
             title = title[0]
-        regex = re.compile(r'(\[[\w ]*\])|(\([\w ]*\))|[\"\'\:\?\!]', re.MULTILINE)
+        regex = re.compile(r'''\[[\w ]+\]|\([\w ]+\)|["':?!*#$^%@]+''', re.MULTILINE) 
         title = re.sub(regex, '', title)
         self.title = title
         if 'keywords' in videoDetails.keys():
@@ -100,7 +100,9 @@ class Youtube:
                 check = i["owner"]["videoOwnerRenderer"]
                 if 'subscriberCountText' in check.keys() and 'runs' in check['subscriberCountText'].keys():
                     self.subscribers = check["subscriberCountText"]["runs"][0]["text"].split(' ')[0]
-                self.description="".join([j["text"] for j in i["description"]["runs"]])
+                self.description=""
+                if "description" in i.keys() and 'runs' in i['dictionary'].keys() and 'text' in i['description']['runs']:
+                    self.description = "".join([j["text"] for j in i["description"]["runs"]])
                 self.meta = dict()
                 if "rows" in i["metadataRowContainer"]["metadataRowContainerRenderer"]:
                     mD = i["metadataRowContainer"]["metadataRowContainerRenderer"]["rows"]
