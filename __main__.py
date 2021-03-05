@@ -101,7 +101,7 @@ class Youtube:
                 if 'subscriberCountText' in check.keys() and 'runs' in check['subscriberCountText'].keys():
                     self.subscribers = check["subscriberCountText"]["runs"][0]["text"].split(' ')[0]
                 self.description=""
-                if "description" in i.keys() and 'runs' in i['dictionary'].keys() and 'text' in i['description']['runs']:
+                if "description" in i.keys() and 'runs' in i['description'].keys() and 'text' in i['description']['runs']:
                     self.description = "".join([j["text"] for j in i["description"]["runs"]])
                 self.meta = dict()
                 if "rows" in i["metadataRowContainer"]["metadataRowContainerRenderer"]:
