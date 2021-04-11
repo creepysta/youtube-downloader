@@ -143,6 +143,9 @@ def main():
             if more.lower() == 'n':
                 sys.exit(0)
             elif more.lower() == 'y':
+                retry_path = 'retry'
+                if os.path.exists(retry_path):
+                    os.system(f'rmdir "{retry_path}" /s /q')
                 break
             else:
                 print('Choose "y" to continue, "n" to stop.')

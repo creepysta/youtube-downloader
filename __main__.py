@@ -62,7 +62,7 @@ class Youtube:
         title = title.split('|')
         if len(title):
             title = title[0]
-        regex = re.compile(r'''\[[\w ]+\]|\([\w ]+\)|["':?!*#$^%@]+''', re.MULTILINE) 
+        regex = re.compile(r'''["':?!*#$^%@/\\]+''', re.MULTILINE) 
         title = re.sub(regex, '', title)
         self.title = title
         if 'keywords' in videoDetails.keys():
