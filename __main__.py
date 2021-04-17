@@ -113,7 +113,9 @@ class Youtube:
                             if 'simpleText' in contents[0]:
                                 self.meta[i["metadataRowRenderer"]["title"]["simpleText"]] = i["metadataRowRenderer"]["contents"][0]["simpleText"]
                             else:
-                                self.meta[i["metadataRowRenderer"]["title"]["simpleText"]] = ''
+                                now = i["metadataRowRenderer"]["title"]
+                                if 'simpleText' in now.keys():
+                                    self.meta[now['simpleText']] = ''
 
 
         self.algo_js = None
