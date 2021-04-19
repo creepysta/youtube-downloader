@@ -8,7 +8,7 @@ class Youtube:
     def __init__(self,id):
         '''
         This class takes the Youtube URL as an argument and then perform regex to get the important data from the HTML file.
-    
+
         Params:
             url:str Takes Youtube URL
 
@@ -62,7 +62,7 @@ class Youtube:
         title = title.split('|')
         if len(title):
             title = title[0]
-        regex = re.compile(r'''["':?!*#$^%@/\\]+''', re.MULTILINE) 
+        regex = re.compile(r'''["':?!*#$^%@/\\]+''', re.MULTILINE)
         title = re.sub(regex, '', title)
         self.title = title
         if 'keywords' in videoDetails.keys():
@@ -90,7 +90,7 @@ class Youtube:
                 if len(check):
                     self.dislikes = check[0].replace(',','')
                 #print(f'self.dislikes = {self.dislikes}\tcheck len = {len(check)}')
-                
+
             if "videoSecondaryInfoRenderer" in i.keys():
                 i=i["videoSecondaryInfoRenderer"]
                 self.channelThumb=i["owner"]["videoOwnerRenderer"]["thumbnail"]["thumbnails"]
@@ -124,13 +124,13 @@ class Youtube:
         js_file = requests.get(self.js_url).text
         data = Decipher(js_file,process=True).get_full_function()
         return data
-    
+
     def Formats(self):
         '''
         Returns:
-            Returns List of all stream formats available for the video. 
+            Returns List of all stream formats available for the video.
 
-        Return Type : 
+        Return Type :
             List(streams_objects)
         '''
         fmt = list()
@@ -159,7 +159,7 @@ class Youtube:
                 abr = stream["bitrate"]
             if 'signatureCipher' in stream.keys():
                 if self.algo_js is None:
-                    self.algo_js = self.get_js()   
+                    self.algo_js = self.get_js()
                 signature,url = stream["signatureCipher"].split('&sp=sig&')
                 deciphered_signature = Decipher().deciphered_signature(signature = signature.split('s=')[-1].replace('%253D','=').replace('%3D','='),algo_js=self.algo_js)
                 url = unquote(url).split('=',1)[1]+'&sig='+deciphered_signature
@@ -182,18 +182,18 @@ class Youtube:
             fmt.append(Format(self.category,description,self.title,{'itag':itag,'mimeType':Mime,'vcodec':vcodec,'acodec':acodec,'fps':fps,'abr':abr,'quality':quality,'url':url,'size':size,'adaptive':adaptive,'progressive':progressive}))
         return fmt
 class Playlist:
-    
+
     def __init__(self,url:str,start:int = None,end:int = None):
         '''
         This Class is responsible for:
             1. Get list of all the Videos
             2. Create Continuation URL if len(videos)>100
             3. Get Continuation data and append all the video IDs to IDS variable
-        
-        Parameters : 
+
+        Parameters :
             url: str - URL of the PlayList
             start,end - Defines the range of Videos you want.
-        
+
         Returns :
             Tuple : All the Video IDs within the Range variable( if Defined)
         '''
@@ -238,18 +238,18 @@ class Playlist:
     def get_continuation_data(self,Token):
         '''
         To get next set of videos, Continuation Token is required to be passed to the Youtube API.
-        This function fetches the Continuation token from the Requests Response text    
-        
+        This function fetches the Continuation token from the Requests Response text
+
         Returns : Tuple containing Final_Url and JSON post data
             (
                 final_url:str - Continuation URL,
                 payload:str - JSON post data to fetch next set of videos
             )
-       
-        Parameters:    
-            
+
+        Parameters:
+
             Token:str - Continuation Token to access next page
-        '''        
+        '''
         payload = {
             "context":
                 {"client":

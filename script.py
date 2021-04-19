@@ -1,8 +1,10 @@
+import re
 import os
 import sys
 from bs4 import BeautifulSoup
 from pathlib import Path
 from tube_dl import Playlist, Youtube
+import requests
 
 def ytplaylist(playlist = None):
     print('Downloading...')
@@ -16,7 +18,7 @@ def ytplaylist(playlist = None):
             print(f'{len(need)} songs found.')
             for index, a in enumerate(need):
                 href = a['href']
-                print(f'{index+1}.', end = ' ') 
+                print(f'{index+1}.', end = ' ')
                 suff = href.split('v=')[1]
                 download(index+1, suff)
             os.remove(f)
@@ -35,7 +37,7 @@ def progress(Chunk=None, bytes_done=None, total_bytes=None):
     if progress >= 1:
         msg += " DONE\r\n"
     sys.stdout.write(msg)
-    sys.stdout.flush() 
+    sys.stdout.flush()
 
 
 def download(index, url, dst = 'videos'):
@@ -47,7 +49,7 @@ def download(index, url, dst = 'videos'):
                 url = url.split('/')[-1]
             yt = Youtube(f'https://youtube.com/watch?v={url}')
             print(f'{yt.title}:')
-            yt.formats.first().download('mp3', progress, dst, None) 
+            yt.formats.first().download('mp3', progress, dst, None)
         except Exception as e:
             print(e)
             log = open('log.txt', 'a+')
@@ -71,11 +73,36 @@ def convert(src='videos', dst='audios'):
     print(f'{src} -> {dst}')
     for index, f in enumerate(os.listdir(src)):
         src_path = os.path.join(src, f);
-        aud_name = Path(src_path).name.split('.')[0] + '.mp3'
+        #aud_name = Path(src_path).name.split('.')[0] + '.mp3'
+        aud_name = Path(src_path).name[:-4] + '.mp3'
         dst_path = os.path.join(dst, aud_name)
         print(f'{index+1}. {aud_name}:', end = '\n')
         os.system(f'ffmpeg -n -v quiet -stats -i "{src_path}" "{dst_path}"')
 
+def fetch_url_from_name(name):
+    query = '+'.join(name[:-1].split(' '))
+    base_url = f'https://www.youtube.com/results?search_query={query}'
+    anchor_class = "yt-simple-endpoint style-scope ytd-video-renderer"
+    anchor_id = "video-title"
+    html = requests.get(base_url).text
+    #return base_url, 'OWPR0MRvles' in html
+    #return base_url, 'X9_n8jakvWU' in html
+    #bs = BeautifulSoup(html)
+    #need = bs.find('a', {'href': re.compile('/watch\?v=\S+')})
+    got_idx = html.index('/watch?v=')
+    got = html[got_idx: got_idx+20].split('=')[1]
+    need = 'https://youtu.be/' + got
+    return need
+
+
+
+def read_song_names():
+    if not os.path.exists('songs'):
+        return
+    with open('songs', 'r') as song_file:
+        for i, song_name in enumerate(song_file):
+            url = fetch_url_from_name(song_name)
+            download(i, url)
 
 def init():
     vid_path = 'videos'
@@ -112,7 +139,7 @@ def retry():
             url = line[1]
             yt = Youtube(f'https://youtube.com/watch?v={url}')
             print(f'{yt.title}:')
-            yt.formats.first().download('mp3', progress, test_path, None) 
+            yt.formats.first().download('mp3', progress, test_path, None)
     convert(src=test_path, dst='audios')
 
 
@@ -124,6 +151,7 @@ def main():
                 print('1: Youtube Playlist')
                 print('2: Youtube Music Playlist')
                 print('3: Youtube Video url')
+                print('4: Download from song names in file songs')
                 choice = eval(input("Enter choice: "))
                 break
             except:
@@ -136,6 +164,8 @@ def main():
         elif choice == 3:
             url = input("Enter the url: ")
             download(1, url, 'videos')
+        elif choice == 4:
+            read_song_names()
         convert()
         retry()
         while True:
