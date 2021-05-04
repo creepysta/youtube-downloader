@@ -89,9 +89,14 @@ def fetch_url_from_name(name):
     #return base_url, 'X9_n8jakvWU' in html
     #bs = BeautifulSoup(html)
     #need = bs.find('a', {'href': re.compile('/watch\?v=\S+')})
-    got_idx = html.index('/watch?v=')
-    got = html[got_idx: got_idx+20].split('=')[1]
-    need = 'https://youtu.be/' + got
+    need = ""
+    try:
+        got_idx = html.index('/watch?v=')
+        got = html[got_idx: got_idx+20].split('=')[1]
+        need = 'https://youtu.be/' + got
+    except:
+        print("Skipping Song: ", end = '')
+        return ''
     return need
 
 
@@ -101,13 +106,18 @@ def read_song_names():
         return
     with open('songs', 'r') as song_file:
         for i, song_name in enumerate(song_file):
-            url = fetch_url_from_name(song_name)
-            download(i, url)
+            if len(song_name) > 0:
+                url = fetch_url_from_name(song_name)
+                if len(url) == 0:
+                    print(song_name)
+                    continue
+                download(i, url)
 
 def init():
     vid_path = 'videos'
     aud_path = 'audios'
     log_file = 'log.txt'
+    songs_file = 'songs'
     retry_path = 'retry'
     if os.path.exists(log_file):
         os.remove(log_file)
@@ -117,6 +127,9 @@ def init():
         os.system(f'rmdir "{aud_path}" /s /q')
     if os.path.exists(retry_path):
         os.system(f'rmdir "{retry_path}" /s /q')
+    if not os.path.exists(songs_file):
+        with open(songs_file, 'w') as sf:
+            pass
     os.mkdir(vid_path)
     os.mkdir(aud_path)
 
