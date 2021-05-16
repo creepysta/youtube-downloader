@@ -77,7 +77,7 @@ def convert(src='videos', dst='audios'):
         aud_name = Path(src_path).name[:-4] + '.mp3'
         dst_path = os.path.join(dst, aud_name)
         print(f'{index+1}. {aud_name}:', end = '\n')
-        os.system(f'ffmpeg -n -v quiet -stats -i "{src_path}" "{dst_path}"')
+        os.system(f'ffmpeg -n -v quiet -stats -i "{src_path}" -ab 128k "{dst_path}"')
 
 def fetch_url_from_name(name):
     query = '+'.join(name[:-1].split(' '))
