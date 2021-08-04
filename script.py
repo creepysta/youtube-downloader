@@ -102,9 +102,12 @@ def fetch_url_from_name(name):
 
 
 def read_song_names():
-    if not os.path.exists('songs'):
+    path = 'songs'
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        path = input("Enter path: ")
+    if not os.path.exists(path):
         return
-    with open('songs', 'r') as song_file:
+    with open(path, 'r') as song_file:
         for i, song_name in enumerate(song_file):
             if len(song_name) > 0:
                 url = fetch_url_from_name(song_name)
@@ -163,8 +166,8 @@ def main():
             try:
                 print('1: Youtube Playlist')
                 print('2: Youtube Music Playlist')
-                print('3: Youtube Video url')
-                print('4: Download from song names in file songs')
+                print('3: Youtube Video urls')
+                print('4: Download from song names in a file')
                 choice = eval(input("Enter choice: "))
                 break
             except:
@@ -175,10 +178,19 @@ def main():
             url = input("Enter the url: ")
             musicyt(url)
         elif choice == 3:
-            url = input("Enter the url: ")
-            download(1, url, 'videos')
+            url = input("Enter url: ")
+            urls = set()
+            while len(url):
+                urls.add(url)
+                url = input("Enter url: ")
+            for idx, url in enumerate(urls):
+                download(idx+1, url, 'videos')
         elif choice == 4:
             read_song_names()
+            if os.path.exists('songs'):
+                ans = input("Delete songs file [y/n]: ")
+                if ans.lower() == 'y':
+                    os.remove('songs')
         convert()
         retry()
         while True:
