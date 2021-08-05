@@ -167,7 +167,8 @@ def main():
                 print('1: Youtube Playlist')
                 print('2: Youtube Music Playlist')
                 print('3: Youtube Video urls')
-                print('4: Download from song names in a file')
+                print('4: Song names')
+                print('5: Download from song names in a file')
                 choice = eval(input("Enter choice: "))
                 break
             except:
@@ -179,13 +180,27 @@ def main():
             musicyt(url)
         elif choice == 3:
             url = input("Enter url: ")
-            urls = set()
+            urls = list()
             while len(url):
-                urls.add(url)
+                urls.append(url)
                 url = input("Enter url: ")
+            urls = list(set(urls))
             for idx, url in enumerate(urls):
                 download(idx+1, url, 'videos')
         elif choice == 4:
+            names = list()
+            name = input("Enter song name: ")
+            while len(name):
+                names.append(name)
+                name = input("Enter song name: ")
+            names = list(set(names))
+            for idx, name in enumerate(names):
+                url = fetch_url_from_name(name)
+                if len(url) == 0:
+                    print(f"Can't find song: {song}")
+                else:
+                    download(idx+1, url, 'videos')
+        elif choice == 5:
             read_song_names()
             if os.path.exists('songs'):
                 ans = input("Delete songs file [y/n]: ")
