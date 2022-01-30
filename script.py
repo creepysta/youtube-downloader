@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from tube_dl import Playlist, Youtube
 import requests
+import time
 
 def ytplaylist(playlist = None):
     print('Downloading...')
@@ -41,22 +42,41 @@ def progress(Chunk=None, bytes_done=None, total_bytes=None):
 
 
 def download(index, url, dst = 'videos'):
-    while True:
-        try:
-            if 'youtube' in url:
-                _, url = url.split('v=')
-            elif 'youtu.be' in url:
-                url = url.split('/')[-1]
-            yt = Youtube(f'https://youtube.com/watch?v={url}')
-            print(f'{yt.title}:')
-            yt.formats.first().download('mp3', progress, dst, None)
-        except Exception as e:
-            print(e)
-            log = open('log.txt', 'a+')
-            log.write(f'{index}:{url}\n{e}\n')
-            ok = False
-            log.close()
+    retry_cnt = 3
+    if 'youtube' in url:
+        _, url = url.split('v=')
+    elif 'youtu.be' in url:
+        url = url.split('/')[-1]
+    for _ in range(3):
+      try:
+        yt = Youtube(f'https://youtube.com/watch?v={url}')
+        print(f'{yt.title}:')
+        yt.formats.first().download('mp3', progress, dst, None)
         break
+      except Exception as e:
+        print(f"retrying yt = Youtube(f'https://youtube.com/watch?v={url}'): {_}")
+        continue
+
+    #while True:
+        #try:
+            #if 'youtube' in url:
+                #_, url = url.split('v=')
+            #elif 'youtu.be' in url:
+                #url = url.split('/')[-1]
+            #yt = Youtube(f'https://youtube.com/watch?v={url}')
+            #print(f'{yt.title}:')
+            #yt.formats.first().download('mp3', progress, dst, None)
+        #except Exception as e:
+            #print(e)
+            #retry_cnt -= 1
+            #log = open('log.txt', 'a+')
+            #log.write(f'{index}:{url}\n{e}\n')
+            #ok = False
+            #log.close()
+            #print(f"Retrying url : {url}. Remaining retries : {retry_cnt}")
+            #if retry_cnt == 0:
+                #break
+            #time.sleep(2)
 
 
 def musicyt(playlist):
@@ -84,7 +104,15 @@ def fetch_url_from_name(name):
     base_url = f'https://www.youtube.com/results?search_query={query}'
     anchor_class = "yt-simple-endpoint style-scope ytd-video-renderer"
     anchor_id = "video-title"
-    html = requests.get(base_url).text
+    print("#########################")
+    print(base_url)
+    for _ in range(3):
+      try:
+        html = requests.get(base_url).text
+        break
+      except Exception as e:
+        print(f"retrying : html = requests.get(base_url).text : {_} times")
+        continue
     #return base_url, 'OWPR0MRvles' in html
     #return base_url, 'X9_n8jakvWU' in html
     #bs = BeautifulSoup(html)
@@ -95,9 +123,9 @@ def fetch_url_from_name(name):
         got = html[got_idx: got_idx+20].split('=')[1]
         need = 'https://youtu.be/' + got
     except:
-        print("Skipping Song: ", end = '')
-        return ''
-    return need
+        print(f"Skipping Song: {name}")
+    finally:
+        return need
 
 
 
